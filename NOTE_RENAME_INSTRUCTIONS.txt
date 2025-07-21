@@ -1,0 +1,5 @@
+
+Search and replace all:
+- "FitTrack AI" → "F/AI"
+- "fittrack-ai" → "f-ai"
+- Emails like trainer@fittrack.ai → trainer@f.ai

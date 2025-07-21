@@ -1,0 +1,1462 @@
+# FitTrack AI Application Code
+
+This file contains the complete source code for the FitTrack AI application, organized by file path.
+
+## `package.json`
+
+```json
+{
+  "name": "fittrack-ai",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^1.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.12.7",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@types/uuid": "^9.0.8",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  }
+}
+```
+
+## `vite.config.ts`
+
+```typescript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  define: {
+    'process.env.API_KEY': JSON.stringify(process.env.VITE_GEMINI_API_KEY)
+  }
+})
+```
+
+## `tailwind.config.js`
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: 'class',
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#2563eb', // blue-600
+          light: '#3b82f6',   // blue-500
+          dark: '#1d4ed8',   // blue-700
+          '50': '#eff6ff',
+          '100': '#dbeafe',
+        },
+        secondary: {
+          DEFAULT: '#6b7280', // gray-500
+          light: '#9ca3af',   // gray-400
+          dark: '#4b5563',   // gray-600
+        },
+        accent: {
+          DEFAULT: '#f59e0b', // amber-500
+          dark: '#b45309',   // amber-700
+        },
+        success: {
+          DEFAULT: '#16a34a', // green-600
+          light: '#22c55e',   // green-500
+          '50': '#f0fdf4',
+          '100': '#dcfce7',
+        },
+        danger: {
+          DEFAULT: '#dc2626', // red-600
+          light: '#ef4444',   // red-500
+          '50': '#fef2f2',
+          '100': '#fee2e2',
+        },
+        warning: {
+          DEFAULT: '#f97316', // orange-500
+          '100': '#ffedd5',
+        },
+        slate: {
+          '50': '#f8fafc',
+          '100': '#f1f5f9',
+          '200': '#e2e8f0',
+          '300': '#cbd5e1',
+          '400': '#94a3b8',
+          '500': '#64748b',
+          '600': '#475569',
+          '700': '#334155',
+          '800': '#1e293b',
+          '900': '#0f172a',
+        },
+      }
+    },
+  },
+  plugins: [],
+}
+```
+
+## `postcss.config.js`
+
+```javascript
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+## `tsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
+
+## `tsconfig.node.json`
+
+```json
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+```
+
+## `README.md`
+
+```markdown
+# FitTrack AI
+
+This is a sophisticated, multi-purpose personal training application designed for trainers, their clients, and individuals training on their own.
+
+This project is built with React, TypeScript, and Vite, and uses Tailwind CSS for styling.
+
+---
+
+## 🚀 Getting Started: Deployment Guide for Testers
+
+Follow these steps to get the app running on your computer and deploy it online so your test group can access it from anywhere.
+
+### Prerequisites
+
+You need to have **[Node.js](https://nodejs.org/)** installed on your computer. This includes `npm`, the Node Package Manager, which we'll use to install the project's dependencies.
+
+### Step 1: Set Up The Project Locally
+
+First, let's get the project running on your own machine. This is a great way to test changes and understand how the app is built.
+
+1.  **Download the Code**: Create a new folder on your computer (e.g., `fittrack-ai`) and copy all the project files into it, making sure to maintain the folder structure (`src`, `src/components`, etc.).
+
+2.  **Install Dependencies**: Open a terminal (like Command Prompt, PowerShell, or Terminal on Mac) inside your new `fittrack-ai` folder and run this command. This will download and install all the necessary packages for React, Tailwind, and other tools.
+    ```bash
+    npm install
+    ```
+
+3.  **Set Up Your API Key (Crucial!)**: To make the AI features work, you need to provide your Gemini API key in a secure way.
+    - In the main `fittrack-ai` folder, create a new file named exactly `.env.local`.
+    - Open this new file in a text editor and add the following line, pasting your actual Gemini API key after the equals sign:
+    ```
+    VITE_GEMINI_API_KEY=YOUR_SECRET_API_KEY_HERE
+    ```
+    - **Important**: This file is intentionally kept private and should never be shared publicly. It allows you to use your secret key without putting it directly in the code.
+
+4.  **Run the Development Server**: Now, you can start the app on your computer by running:
+    ```bash
+    npm run dev
+    ```
+    Your terminal will show you a local address, usually `http://localhost:5173`. Open this URL in your web browser. The app will be running, and you can fully test all features, including creating passkeys.
+
+### Step 2: Deploy to the Web for Your Testers
+
+To get a public, shareable link for your wife and other testers, you need to deploy the app to a web hosting service. We'll use **Vercel**, which is free and incredibly easy for projects like this.
+
+1.  **Sign Up**: Create a free account at [Vercel.com](https://vercel.com/). It's easiest to sign up with a GitHub account if you have one.
+
+2.  **Deploy the Project**:
+    - Log in to your Vercel dashboard.
+    - Find the "Add New..." button and select "Project".
+    - Vercel makes it easy to import a project from a Git repository (like GitHub), but for simplicity, you can also use their command-line tool or upload your folder. The simplest first-time method is often **drag-and-drop**: Vercel will guide you on how to upload your `fittrack-ai` folder.
+
+3.  **Configure the Settings**: Vercel is smart and will likely detect that you have a Vite project. If it asks for settings, ensure they are configured as follows:
+    - **Framework Preset**: `Vite`
+    - **Build Command**: `vite build` (or `npm run build`)
+    - **Output Directory**: `dist`
+
+4.  **Set the API Key Online (Most Important Step!)**: Just like you did locally, you need to provide your secret API key to Vercel so the AI features work on the live website.
+    - In your new project's settings on Vercel, find the **"Environment Variables"** section.
+    - Add a new variable with the following details:
+        - **Name**: `VITE_GEMINI_API_KEY`
+        - **Value**: Paste your secret Gemini API key here.
+    - Save the variable. Vercel will keep this key secure.
+
+5.  **Launch!**: Click the **"Deploy"** button. Vercel will build your application and, in a minute or two, provide you with a public URL (e.g., `fittrack-ai-xyz.vercel.app`).
+
+### Step 3: Share and Test!
+
+That's it! You can now share that Vercel URL with your test group. They will be able to access the full application, including all AI features, from their own devices and provide you with valuable feedback. Good luck!
+```
+
+## `metadata.json`
+
+```json
+{
+  "name": "FitTrack AI",
+  "description": "A personal training application for trainers to create AI-assisted workout plans and for clients to track their progress seamlessly.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
+```
+
+## `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FitTrack AI</title>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "uuid": "https://esm.sh/uuid@^11.1.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.9.0",
+    "recharts": "https://esm.sh/recharts@^3.1.0",
+    "vite": "https://esm.sh/vite@^7.0.4",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.6.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
+```
+
+## `src/index.css`
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-slate-50 dark:bg-slate-900;
+}
+```
+
+## `src/index.tsx`
+
+```typescript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
+}
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+## `src/App.tsx`
+
+```typescript
+import React, { useState, useEffect, useCallback } from 'react';
+import AdminView from './components/admin/AdminView';
+import ClientView from './components/client/ClientView';
+import ClientLogin from './components/auth/ClientLogin';
+import TrainerLogin from './components/auth/TrainerLogin';
+import SoloLogin from './components/auth/SoloLogin';
+import SoloView from './components/solo/SoloView';
+import { storageService } from './services/storageService';
+import { authService } from './services/authService';
+import { UserRole, AuthState, AdminAuthState, SoloAuthState, WeightUnit, Theme } from './types';
+import Button from './components/ui/Button';
+
+// Feather icons for a clean look
+const UsersIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-white"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+);
+const UserIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-white"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+);
+const CheeseIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-white">
+       <path d="m21.71 13.12-6.52-3.91-4.7-7.13a.999.999 0 0 0-1.61.12L2.31 13.12a1 1 0 0 0 .58 1.7l18.24-.01a1 1 0 0 0 .58-1.69z"/>
+        <circle cx="9" cy="10" r="1"/>
+        <circle cx="15" cy="10" r="1"/>
+        <circle cx="12" cy="5" r="1"/>
+    </svg>
+);
+
+
+type View = 'role_selection' | 'client_login' | 'trainer_login' | 'solo_login';
+
+const App: React.FC = () => {
+    const [authState, setAuthState] = useState<AuthState | null>(null);
+    const [view, setView] = useState<View>('role_selection');
+    const [isLoading, setIsLoading] = useState(true);
+    const [preselectedClientId, setPreselectedClientId] = useState<string | null>(null);
+    
+    const [unit, setUnit] = useState<WeightUnit>(() => (localStorage.getItem('fit_track_unit') as WeightUnit) || 'lbs');
+    
+    // Theme state
+    const [theme, setTheme] = useState<Theme>(() => {
+        const savedTheme = localStorage.getItem('theme') as Theme | null;
+        return savedTheme || 'system';
+    });
+
+    useEffect(() => {
+        const root = window.document.documentElement;
+        const isDark =
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        
+        root.classList.remove(isDark ? 'light' : 'dark');
+        root.classList.add(isDark ? 'dark' : 'light');
+    }, [theme]);
+
+    const handleThemeChange = (newTheme: Theme) => {
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    };
+
+    useEffect(() => {
+        localStorage.setItem('fit_track_unit', unit);
+    }, [unit]);
+
+    const loadInitialData = useCallback(() => {
+        if (!localStorage.getItem('initialized')) {
+            storageService.seedData();
+        }
+        storageService.updateInvoiceStatuses();
+        
+        const inviteCode = new URLSearchParams(window.location.search).get('invite_code');
+        if (inviteCode) {
+            setPreselectedClientId(inviteCode);
+            setView('client_login');
+            // Clean the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        const savedAuth = authService.getAuthState();
+        if (savedAuth) {
+            setAuthState(savedAuth);
+        }
+        setIsLoading(false);
+    }, []);
+
+    useEffect(() => {
+        loadInitialData();
+    }, [loadInitialData]);
+
+    const handleLoginSuccess = (newAuthState: AuthState) => {
+        setAuthState(newAuthState);
+        authService.saveAuthState(newAuthState);
+        setView('role_selection'); // Go back to a neutral state after login
+    };
+    
+    const handleLogout = () => {
+        authService.clearAuthState();
+        setAuthState(null);
+        setView('role_selection');
+    };
+    
+    if (isLoading) {
+        return <div className="min-h-screen bg-slate-50 dark:bg-slate-900" />;
+    }
+
+    if (authState?.role === UserRole.Admin) {
+        return <AdminView 
+            onLogout={handleLogout} 
+            authState={authState as AdminAuthState} 
+            setAuthState={setAuthState} 
+            unit={unit}
+            onUnitToggle={setUnit}
+            theme={theme}
+            onThemeChange={handleThemeChange}
+        />;
+    }
+
+    if (authState?.role === UserRole.Solo) {
+        return <SoloView 
+            onLogout={handleLogout} 
+            authState={authState as SoloAuthState}
+            setAuthState={setAuthState}
+            unit={unit}
+            onUnitToggle={setUnit}
+            theme={theme}
+            onThemeChange={handleThemeChange}
+        />;
+    }
+    
+    if (authState?.role === UserRole.Client && authState.clientId) {
+        return <ClientView 
+            clientId={authState.clientId} 
+            onLogout={handleLogout}
+            unit={unit}
+            onUnitToggle={setUnit} 
+            theme={theme}
+            onThemeChange={handleThemeChange}
+        />;
+    }
+
+    if (view === 'trainer_login') {
+        return <TrainerLogin onLoginSuccess={handleLoginSuccess} onBack={() => setView('role_selection')} />;
+    }
+
+    if (view === 'solo_login') {
+        return <SoloLogin onLoginSuccess={handleLoginSuccess} onBack={() => setView('role_selection')} />;
+    }
+    
+    if (view === 'client_login') {
+        return <ClientLogin onLoginSuccess={handleLoginSuccess} onBack={() => setView('role_selection')} preselectedClientId={preselectedClientId} />;
+    }
+
+    // Default view: Role Selection
+    return (
+        <div className="min-h-screen bg-slate-800 flex flex-col items-center justify-center text-white p-4">
+            <div className="text-center mb-12">
+                <h1 className="text-5xl font-bold mb-2">FitTrack AI</h1>
+                <p className="text-xl text-slate-300">Your Personal Training Companion</p>
+            </div>
+            <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-8">
+                <Button onClick={() => setView('trainer_login')} className="flex flex-col items-center justify-center bg-blue-600 hover:bg-blue-700 transition-all duration-300 rounded-lg p-8 w-64 h-48 shadow-lg transform hover:scale-105">
+                    <UsersIcon />
+                    <span className="mt-4 text-2xl font-semibold">I'm a Trainer</span>
+                </Button>
+                <Button onClick={() => setView('solo_login')} className="flex flex-col items-center justify-center bg-slate-700 hover:bg-slate-600 transition-all duration-300 rounded-lg p-8 w-64 h-48 shadow-lg transform hover:scale-105">
+                    <CheeseIcon />
+                    <span className="mt-4 text-2xl font-semibold">Gym Rat</span>
+                </Button>
+                <Button onClick={() => setView('client_login')} className="flex flex-col items-center justify-center bg-teal-600 hover:bg-teal-700 transition-all duration-300 rounded-lg p-8 w-64 h-48 shadow-lg transform hover:scale-105">
+                    <UserIcon />
+                    <span className="mt-4 text-2xl font-semibold">I'm a Client</span>
+                </Button>
+            </div>
+        </div>
+    );
+};
+
+export default App;
+```
+
+## `src/types.ts`
+
+```typescript
+export enum UserRole {
+    Admin = 'admin',
+    Client = 'client',
+    Solo = 'solo',
+}
+
+export type WeightUnit = 'kg' | 'lbs';
+export type DistanceUnit = 'km' | 'mi' | 'm' | 'yd';
+export type Theme = 'light' | 'dark' | 'system';
+
+export type SubscriptionStatus = 'free' | 'pro';
+
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue';
+
+export interface Notification {
+    id: string;
+    title: string;
+    body: string;
+    read: boolean;
+    createdAt: string; // ISO String
+}
+
+export interface SubscriptionPlan {
+    id: string;
+    name: string;
+    amount: number;
+    interval: 'week' | 'month' | 'year';
+}
+
+export interface ClientSubscription {
+    id: string;
+    clientId: string;
+    planId: string;
+    status: 'active' | 'canceled';
+    startDate: string; // ISO string
+}
+
+export interface Invoice {
+    id: string;
+    clientId: string;
+    clientName: string; // denormalized for easy display
+    amount: number;
+    description: string;
+    status: InvoiceStatus;
+    issueDate: string; // ISO string
+    dueDate: string; // ISO string
+    paidDate?: string; // ISO string
+}
+
+export interface TrainerSettings {
+    lockoutThresholdDays: number; // e.g., 5 days
+}
+
+export interface BaseAuthState {
+    role: UserRole;
+}
+
+export interface AdminAuthState extends BaseAuthState {
+    role: UserRole.Admin;
+    subscriptionStatus: SubscriptionStatus;
+    stripeConnected: boolean;
+}
+
+export interface ClientAuthState extends BaseAuthState {
+    role: UserRole.Client;
+    clientId: string;
+}
+
+export interface SoloAuthState extends BaseAuthState {
+    role: UserRole.Solo;
+    clientId: string;
+    subscriptionStatus: SubscriptionStatus;
+}
+
+export type AuthState = AdminAuthState | ClientAuthState | SoloAuthState;
+
+export interface Exercise {
+    id: string;
+    name: string;
+    sets: number;
+    reps: string; // e.g., "8-12" or "10"
+    rest: string; // e.g., "60s"
+    videoUrl?: string;
+    cues?: string;
+    prescribedWeight?: string;
+    prescribedRpe?: string;
+}
+
+export interface CardioExercise {
+    id: string;
+    activity: string;
+    goalType: 'time' | 'distance';
+    goalValue: number;
+    distanceUnit?: DistanceUnit;
+    intensity: 'low' | 'moderate' | 'high';
+}
+
+export interface WorkoutProgram {
+    id: string;
+    name: string;
+    description: string;
+    programNotes?: string;
+    warmup?: Exercise[];
+    exercises: Exercise[];
+    cardio?: CardioExercise[];
+    cooldown?: Exercise[];
+    ownerId?: string; // Used to silo programs between trainer and solo user
+    scope?: 'client' | 'personal'; // Used to silo trainer's own programs
+}
+
+export interface AIAssistSuggestion extends Partial<WorkoutProgram> {
+    reasoning: string;
+}
+
+export interface Client {
+    id:string;
+    name: string;
+    assignedProgramIds: string[];
+    notes?: string;
+    status: 'active' | 'suspended';
+    userHandle: string;
+    passkeyId?: string;
+}
+
+export interface LoggedSet {
+    setNumber: number;
+    weight: number; // Always stored in KG
+    reps: number;
+    rpe?: number;
+    completed: boolean;
+}
+
+export interface LoggedExercise {
+    exerciseId: string;
+    exerciseName: string;
+    sets: LoggedSet[];
+    notes?: string; // Client's notes for this specific exercise during the workout
+}
+
+export interface LoggedCardio {
+    cardioId: string;
+    activity: string;
+    goalType: 'time' | 'distance';
+    goalValue: number;
+    actualTime?: number; // in minutes
+    actualDistance?: number;
+    distanceUnit?: DistanceUnit;
+}
+
+export interface LoggedWorkout {
+    id: string;
+    programId: string;
+    programName: string;
+    clientId: string;
+    date: string; // ISO string
+    loggedExercises: LoggedExercise[];
+    loggedCardio?: LoggedCardio[];
+    durationSeconds?: number;
+    totalVolume?: number;
+    feeling?: 'none' | 'difficult' | 'okay' | 'great';
+    prsAchieved?: any[]; // Simple for now
+}
+
+export interface InProgressWorkout {
+    clientId: string;
+    programId: string;
+    loggedExercises: LoggedExercise[];
+    loggedCardio?: LoggedCardio[];
+    lastUpdated: string; // ISO string
+}
+
+export interface ProgressDataPoint {
+    date: string;
+    weight: number; // Stored in KG
+}
+
+export interface PersonalRecord {
+    exerciseName: string;
+    records: {
+        weight: number; // Stored in KG
+        reps: number;
+        date: string;
+        estimated1RM: number; // Stored in KG
+    }[];
+}
+```
+
+## `src/constants.ts`
+
+```typescript
+import { Client, WorkoutProgram, SubscriptionPlan, Notification } from './types';
+import { v4 as uuidv4 } from 'uuid';
+
+export const TRAINER_CLIENT_ID = 'trainer-profile-id';
+export const SOLO_USER_CLIENT_ID = 'solo-user-client-id';
+
+// NOTE: Initial client data is now minimal. 
+// The trainer is expected to add their own clients.
+export const CLIENTS: Client[] = [
+    { id: TRAINER_CLIENT_ID, name: 'Me', assignedProgramIds: ['program-1'], notes: 'My personal training profile.', status: 'active', userHandle: uuidv4() },
+];
+
+export const WORKOUT_PROGRAMS: WorkoutProgram[] = [
+    {
+        id: 'program-1',
+        name: 'Full Body Strength A',
+        description: 'A balanced workout targeting all major muscle groups.',
+        programNotes: 'Focus on controlling the weight on the way down for every exercise. Form over everything this week!',
+        warmup: [
+             { id: uuidv4(), name: 'Jumping Jacks', sets: 1, reps: '60s', rest: '30s' },
+             { id: uuidv4(), name: 'Cat-Cow Stretch', sets: 1, reps: '10', rest: '0s' },
+        ],
+        exercises: [
+            { id: uuidv4(), name: 'Barbell Squat', sets: 4, reps: '5-8', rest: '90s', videoUrl: 'https://www.youtube.com/watch?v=bEv6CCg2BC8', cues: 'Keep your chest up and back straight. Drive through your heels.', prescribedWeight: '135lbs', prescribedRpe: '7-8' },
+            { id: uuidv4(), name: 'Bench Press', sets: 4, reps: '5-8', rest: '90s', videoUrl: 'https://www.youtube.com/watch?v=rT7DgCr-3pg', cues: 'Tuck your elbows slightly, don\'t let them flare out to 90 degrees.', prescribedWeight: '185lbs', prescribedRpe: '8' },
+            { id: uuidv4(), name: 'Barbell Row', sets: 3, reps: '8-12', rest: '60s', videoUrl: 'https://www.youtube.com/watch?v=RQU8wZPbioA' },
+            { id: uuidv4(), name: 'Overhead Press', sets: 3, reps: '8-12', rest: '60s' },
+        ],
+        cardio: [
+            { id: uuidv4(), activity: 'Treadmill Run', goalType: 'time', goalValue: 15, intensity: 'moderate' }
+        ],
+        cooldown: [
+            { id: uuidv4(), name: 'Quad Stretch', sets: 1, reps: '30s each side', rest: '0s' },
+            { id: uuidv4(), name: 'Pigeon Pose', sets: 1, reps: '30s each side', rest: '0s' },
+        ]
+    },
+    {
+        id: 'program-2',
+        name: 'HIIT Cardio Blast',
+        description: 'High-intensity interval training to maximize calorie burn.',
+        exercises: [
+            { id: uuidv4(), name: 'Burpees', sets: 5, reps: '45s work', rest: '15s' },
+            { id: uuidv4(), name: 'High Knees', sets: 5, reps: '45s work', rest: '15s' },
+            { id: uuidv4(), name: 'Jumping Jacks', sets: 5, reps: '45s work', rest: '15s' },
+            { id: uuidv4(), name: 'Mountain Climbers', sets: 5, reps: '45s work', rest: '15s' },
+        ],
+    },
+];
+
+export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
+    { id: 'plan-1', name: 'Weekly Coaching', amount: 75, interval: 'week'},
+    { id: 'plan-2', name: 'Monthly Standard', amount: 250, interval: 'month'},
+    { id: 'plan-3', name: 'Monthly Premium', amount: 400, interval: 'month'},
+];
+
+export const NOTIFICATIONS: Notification[] = [
+    {
+        id: uuidv4(),
+        title: 'New Feature: Submit Feedback!',
+        body: "Testers, you can now submit feedback or report bugs directly from the app! Just open the Tools modal (wrench icon) and use the new 'Feedback' tab.",
+        read: false,
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: uuidv4(),
+        title: 'Welcome to FitTrack AI!',
+        body: "We're excited to have you. Explore the dashboard to manage clients, build workout programs, and track progress.",
+        read: true,
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+    }
+];
+```
+
+## `src/utils/conversions.ts`
+
+```typescript
+import { DistanceUnit } from '../types';
+
+export const KG_TO_LBS = 2.20462;
+
+export const lbsToKg = (lbs: number): number => {
+    if (!lbs || isNaN(lbs)) return 0;
+    return lbs / KG_TO_LBS;
+};
+
+export const kgToLbs = (kg: number): number => {
+    if (!kg || isNaN(kg)) return 0;
+    return kg * KG_TO_LBS;
+};
+
+
+const METERS_IN: { [key in DistanceUnit]: number } = {
+    km: 1000,
+    mi: 1609.34,
+    m: 1,
+    yd: 0.9144,
+};
+
+// Converts any distance unit to meters
+const toMeters = (value: number, fromUnit: DistanceUnit): number => {
+    return value * METERS_IN[fromUnit];
+};
+
+// Converts meters to any other distance unit
+const fromMeters = (valueInMeters: number, toUnit: DistanceUnit): number => {
+    return valueInMeters / METERS_IN[toUnit];
+};
+
+export const convertDistance = (value: number, fromUnit: DistanceUnit, toUnit: DistanceUnit): number => {
+    if (fromUnit === toUnit) return value;
+    const valueInMeters = toMeters(value, fromUnit);
+    return fromMeters(valueInMeters, toUnit);
+};
+```
+
+## `src/utils/paceCalculations.ts`
+
+```typescript
+import { convertDistance } from './conversions';
+import { DistanceUnit } from '../types';
+
+// Parses a time string (e.g., "01:30:15" or "45:20") into total seconds
+export const parseTimeToSeconds = (timeStr: string): number => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':').map(Number);
+    let seconds = 0;
+    if (parts.length === 3) { // HH:MM:SS
+        seconds += parts[0] * 3600;
+        seconds += parts[1] * 60;
+        seconds += parts[2];
+    } else if (parts.length === 2) { // MM:SS
+        seconds += parts[0] * 60;
+        seconds += parts[1];
+    } else if (parts.length === 1) { // SS
+        seconds += parts[0];
+    }
+    return seconds;
+};
+
+// Formats total seconds into a readable time string (HH:MM:SS)
+export const formatSecondsToTime = (totalSeconds: number): string => {
+    if (isNaN(totalSeconds) || totalSeconds <= 0) return '';
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+
+    const parts = [];
+    if (hours > 0) parts.push(String(hours).padStart(2, '0'));
+    parts.push(String(minutes).padStart(2, '0'));
+    parts.push(String(seconds).padStart(2, '0'));
+    
+    // Don't show hours if it's 00
+    if (parts.length === 3 && parts[0] === '00') {
+        parts.shift();
+    }
+
+    return parts.join(':');
+};
+
+// Calculates pace in seconds per the given distance unit
+export const calculatePace = (distance: number, timeInSeconds: number, unit: DistanceUnit): number => {
+    if (distance <= 0 || timeInSeconds <= 0) return 0;
+    return timeInSeconds / distance;
+};
+
+// Calculates distance
+export const calculateDistance = (timeInSeconds: number, paceInSeconds: number): number => {
+    if (timeInSeconds <= 0 || paceInSeconds <= 0) return 0;
+    return timeInSeconds / paceInSeconds;
+};
+
+// Calculates time in seconds
+export const calculateTime = (distance: number, paceInSeconds: number): number => {
+    if (distance <= 0 || paceInSeconds <= 0) return 0;
+    return distance * paceInSeconds;
+};
+```
+
+## `src/services/storageService.ts`
+
+```typescript
+import { Client, WorkoutProgram, LoggedWorkout, Invoice, TrainerSettings, SubscriptionPlan, ClientSubscription, InProgressWorkout, LoggedExercise, LoggedCardio, Notification } from '../types';
+import { CLIENTS, WORKOUT_PROGRAMS, SUBSCRIPTION_PLANS, NOTIFICATIONS } from '../constants';
+
+const CLIENTS_KEY = 'fit_track_clients';
+const PROGRAMS_KEY = 'fit_track_programs';
+const LOGGED_WORKOUTS_KEY = 'fit_track_logged_workouts';
+const INVOICES_KEY = 'fit_track_invoices';
+const TRAINER_SETTINGS_KEY = 'fit_track_trainer_settings';
+const PLANS_KEY = 'fit_track_subscription_plans';
+const SUBSCRIPTIONS_KEY = 'fit_track_client_subscriptions';
+const IN_PROGRESS_WORKOUTS_KEY = 'fit_track_in_progress_workouts';
+const NOTIFICATIONS_KEY = 'fit_track_notifications';
+
+const getItems = <T,>(key: string): T[] => {
+    try {
+        const items = localStorage.getItem(key);
+        return items ? JSON.parse(items) : [];
+    } catch (error) {
+        console.error(`Error parsing JSON from localStorage key "${key}":`, error);
+        return [];
+    }
+};
+
+const getItem = <T,>(key: string, defaultValue: T): T => {
+    try {
+        const item = localStorage.getItem(key);
+        return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+        console.error(`Error parsing JSON from localStorage key "${key}":`, error);
+        return defaultValue;
+    }
+}
+
+const saveItems = <T,>(key: string, items: T[]): void => {
+    localStorage.setItem(key, JSON.stringify(items));
+};
+
+const saveItem = <T,>(key: string, item: T): void => {
+    localStorage.setItem(key, JSON.stringify(item));
+}
+
+export const storageService = {
+    // SEED
+    seedData: () => {
+        saveItems(CLIENTS_KEY, CLIENTS);
+        saveItems(PROGRAMS_KEY, WORKOUT_PROGRAMS);
+        saveItems(PLANS_KEY, SUBSCRIPTION_PLANS);
+        saveItems(NOTIFICATIONS_KEY, NOTIFICATIONS);
+        // Default trainer settings
+        saveItem(TRAINER_SETTINGS_KEY, { lockoutThresholdDays: 7 });
+        localStorage.setItem('initialized', 'true');
+    },
+
+    // CLIENTS
+    getClients: (): Client[] => getItems<Client>(CLIENTS_KEY),
+    saveClients: (clients: Client[]) => saveItems(CLIENTS_KEY, clients),
+    
+    // WORKOUT PROGRAMS
+    getPrograms: (): WorkoutProgram[] => getItems<WorkoutProgram>(PROGRAMS_KEY),
+    savePrograms: (programs: WorkoutProgram[]) => saveItems(PROGRAMS_KEY, programs),
+    
+    // LOGGED WORKOUTS
+    getLoggedWorkouts: (): LoggedWorkout[] => getItems<LoggedWorkout>(LOGGED_WORKOUTS_KEY),
+    saveLoggedWorkouts: (workouts: LoggedWorkout[]) => saveItems(LOGGED_WORKOUTS_KEY, workouts),
+    addLoggedWorkout: (workout: LoggedWorkout) => {
+        const workouts = getItems<LoggedWorkout>(LOGGED_WORKOUTS_KEY);
+        saveItems(LOGGED_WORKOUTS_KEY, [...workouts, workout]);
+    },
+
+    // IN-PROGRESS WORKOUTS (for save & resume)
+    getInProgressWorkout: (clientId: string, programId: string): InProgressWorkout | null => {
+        const workouts = getItems<InProgressWorkout>(IN_PROGRESS_WORKOUTS_KEY);
+        const found = workouts.find(w => w.clientId === clientId && w.programId === programId);
+        return found || null;
+    },
+    saveInProgressWorkout: (clientId: string, programId: string, progress: { loggedExercises: LoggedExercise[], loggedCardio?: LoggedCardio[] }) => {
+        let workouts = getItems<InProgressWorkout>(IN_PROGRESS_WORKOUTS_KEY);
+        const newWorkout: InProgressWorkout = {
+            clientId,
+            programId,
+            loggedExercises: progress.loggedExercises,
+            loggedCardio: progress.loggedCardio,
+            lastUpdated: new Date().toISOString()
+        };
+        const existingIndex = workouts.findIndex(w => w.clientId === clientId && w.programId === programId);
+        if (existingIndex > -1) {
+            workouts[existingIndex] = newWorkout;
+        } else {
+            workouts.push(newWorkout);
+        }
+        saveItems(IN_PROGRESS_WORKOUTS_KEY, workouts);
+    },
+    clearInProgressWorkout: (clientId: string, programId: string) => {
+        let workouts = getItems<InProgressWorkout>(IN_PROGRESS_WORKOUTS_KEY);
+        const updatedWorkouts = workouts.filter(w => w.clientId !== clientId || w.programId !== programId);
+        saveItems(IN_PROGRESS_WORKOUTS_KEY, updatedWorkouts);
+    },
+
+    // INVOICES
+    getInvoices: (): Invoice[] => getItems<Invoice>(INVOICES_KEY),
+    saveInvoices: (invoices: Invoice[]) => saveItems(INVOICES_KEY, invoices),
+    updateInvoiceStatuses: () => {
+        const invoices = getItems<Invoice>(INVOICES_KEY);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+        const updatedInvoices = invoices.map(inv => {
+            if (inv.status === 'sent') {
+                const dueDate = new Date(inv.dueDate);
+                if (today > dueDate) {
+                    return { ...inv, status: 'overdue' as const };
+                }
+            }
+            return inv;
+        });
+        saveItems(INVOICES_KEY, updatedInvoices);
+    },
+
+    // TRAINER SETTINGS
+    getTrainerSettings: (): TrainerSettings => getItem<TrainerSettings>(TRAINER_SETTINGS_KEY, { lockoutThresholdDays: 7 }),
+    saveTrainerSettings: (settings: TrainerSettings) => saveItem(TRAINER_SETTINGS_KEY, settings),
+
+    // SUBSCRIPTION PLANS
+    getSubscriptionPlans: (): SubscriptionPlan[] => getItems<SubscriptionPlan>(PLANS_KEY),
+    saveSubscriptionPlans: (plans: SubscriptionPlan[]) => saveItems(PLANS_KEY, plans),
+
+    // CLIENT SUBSCRIPTIONS
+    getClientSubscriptions: (): ClientSubscription[] => getItems<ClientSubscription>(SUBSCRIPTIONS_KEY),
+    saveClientSubscriptions: (subscriptions: ClientSubscription[]) => saveItems(SUBSCRIPTIONS_KEY, subscriptions),
+
+    // NOTIFICATIONS
+    getNotifications: (): Notification[] => getItems<Notification>(NOTIFICATIONS_KEY),
+    saveNotifications: (notifications: Notification[]) => saveItems(NOTIFICATIONS_KEY, notifications),
+};
+```
+
+## `src/services/geminiService.ts`
+
+```typescript
+import { GoogleGenAI, Type } from "@google/genai";
+import { WorkoutProgram, Exercise, Client, LoggedWorkout, AIAssistSuggestion } from '../types';
+
+export const isApiKeySet = !!process.env.API_KEY;
+
+let ai: GoogleGenAI | null = null;
+
+if (isApiKeySet) {
+    ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+} else {
+    console.warn("API_KEY environment variable not set. Gemini features will be disabled.");
+}
+
+const exerciseSchema = {
+    type: Type.OBJECT,
+    properties: {
+        name: { type: Type.STRING, description: "The name of the exercise." },
+        sets: { type: Type.INTEGER, description: "The number of sets to perform." },
+        reps: { type: Type.STRING, description: "The target repetition range (e.g., '8-12' or '15')." },
+        rest: { type: Type.STRING, description: "The rest period in seconds after each set (e.g., '60s')." },
+        cues: { type: Type.STRING, description: "Short, actionable coaching cues for performing the exercise correctly." },
+        prescribedWeight: { type: Type.STRING, description: "The suggested weight for the user, can be a range (e.g., '135-155 lbs') or a percentage." },
+        prescribedRpe: { type: Type.STRING, description: "The target Rate of Perceived Exertion, from 1-10." },
+    },
+    required: ["name", "sets", "reps", "rest"],
+};
+
+const workoutSchema = {
+  type: Type.OBJECT,
+  properties: {
+    name: {
+      type: Type.STRING,
+      description: "A creative and descriptive name for the workout program.",
+    },
+    description: {
+        type: Type.STRING,
+        description: "A short, encouraging description of the workout's purpose."
+    },
+    programNotes: {
+        type: Type.STRING,
+        description: "General notes or a motivational message for the entire workout program."
+    },
+    warmup: {
+        type: Type.ARRAY,
+        description: "A list of warm-up exercises.",
+        items: exerciseSchema
+    },
+    exercises: {
+      type: Type.ARRAY,
+      description: "The main list of exercises for the workout routine.",
+      items: exerciseSchema,
+    },
+    cooldown: {
+        type: Type.ARRAY,
+        description: "A list of cool-down or stretching exercises.",
+        items: exerciseSchema
+    },
+  },
+  required: ["name", "description", "exercises"],
+};
+
+const agenticSuggestionsSchema = {
+    type: Type.ARRAY,
+    items: {
+        type: Type.OBJECT,
+        properties: {
+            ...workoutSchema.properties,
+            reasoning: {
+                type: Type.STRING,
+                description: "A brief, one-sentence explanation for why this workout is a good suggestion for the user."
+            }
+        },
+        required: [...(workoutSchema.required || []), 'reasoning'],
+    }
+};
+
+const callGemini = async (prompt: string, schema: any) => {
+    if (!ai) {
+        console.error("Gemini client not initialized. API key might be missing.");
+        return null;
+    }
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: schema,
+            }
+        });
+        const jsonText = response.text.trim();
+        return JSON.parse(jsonText);
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        return null;
+    }
+};
+
+
+export const geminiService = {
+    generateWorkout: async (prompt: string): Promise<Partial<WorkoutProgram> | null> => {
+        const systemPrompt = `Generate a workout program based on the following user request: "${prompt}".`;
+        return callGemini(systemPrompt, workoutSchema);
+    },
+
+    generateWorkoutFromContent: async (content: string): Promise<Partial<WorkoutProgram> | null> => {
+        const systemPrompt = `
+            You are a fitness expert AI. A user has provided the following content, which could be a URL or plain text describing a workout.
+            Your task is to analyze this content and convert it into a structured JSON object that conforms to the provided schema.
+            Extract all relevant details including the program name, description, warm-up exercises, main exercises, and cool-down exercises.
+            For each exercise, identify the name, sets, reps, and rest period.
+            If the content is a URL, you should fetch the necessary information from the page's main content. If it's plain text, parse it directly.
+            Prioritize accuracy in extracting the workout structure.
+
+            User-provided content:
+            "${content}"
+        `;
+        return callGemini(systemPrompt, workoutSchema);
+    },
+
+    getAgenticSuggestions: async (client: Client, programs: WorkoutProgram[], history: LoggedWorkout[]): Promise<AIAssistSuggestion[] | null> => {
+        const historySummary = history.slice(0, 5).map(h => `- On ${new Date(h.date).toLocaleDateString()}, did "${h.programName}".`).join('\n');
+        const prompt = `
+            You are an expert personal trainer AI. A trainer is looking for program suggestions for their client, "${client.name}".
+            Based on the following context, generate 2-3 new, distinct workout program suggestions that would be a logical next step for this client.
+
+            CONTEXT:
+            - Client's Name: ${client.name}
+            - Trainer's Private Notes: ${client.notes || 'None'}
+            - Currently Assigned Programs: ${programs.map(p => p.name).join(', ') || 'None'}
+            - Recent Workout History (last 5):
+            ${historySummary || 'No recent history.'}
+
+            Provide a short "reasoning" for each suggestion explaining why it's a good fit.
+        `;
+        return callGemini(prompt, agenticSuggestionsSchema);
+    },
+    
+    getSoloAgenticSuggestions: async (programs: WorkoutProgram[], history: LoggedWorkout[]): Promise<AIAssistSuggestion[] | null> => {
+        const historySummary = history.slice(0, 5).map(h => `- On ${new Date(h.date).toLocaleDateString()}, did "${h.programName}".`).join('\n');
+        const prompt = `
+            You are an expert personal trainer AI. A solo user is looking for new workout ideas for themself.
+            Based on the following context, generate 2-3 new, distinct workout program suggestions that would be a logical next step for them.
+
+            CONTEXT:
+            - Their Existing Programs: ${programs.map(p => p.name).join(', ') || 'None'}
+            - Their Recent Workout History (last 5):
+            ${historySummary || 'No recent history.'}
+
+            Provide a short "reasoning" for each suggestion explaining why it's a good fit.
+        `;
+         return callGemini(prompt, agenticSuggestionsSchema);
+    }
+};
+```
+
+## `src/services/authService.ts`
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import { UserRole, Client, AuthState, SubscriptionStatus, AdminAuthState, SoloAuthState, ClientAuthState } from '../types';
+import { storageService } from './storageService';
+import { SOLO_USER_CLIENT_ID, TRAINER_CLIENT_ID } from '../constants';
+
+const AUTH_KEY = 'fit_track_auth_state';
+const TRAINER_PASSKEY_ID_KEY = 'fit_track_trainer_passkey_id';
+const SOLO_PASSKEY_ID_KEY = 'fit_track_solo_passkey_id';
+
+// Static, stable user handles for passkey registration.
+const TRAINER_USER_HANDLE = 'trainer-user-handle-stable-id';
+const SOLO_USER_HANDLE = 'solo-user-handle-stable-id';
+
+
+// Helper to convert between ArrayBuffer and Base64URL
+const bufferEncode = (value: ArrayBuffer) => {
+    return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(value))))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=/g, "");
+}
+
+const bufferDecode = (value: string) => {
+    value = value.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = value.length % 4;
+    if (pad) {
+        if (pad === 1) {
+            throw new Error("InvalidLengthError: Input base64url string is the wrong length to determine padding");
+        }
+        value += new Array(5 - pad).join("=");
+    }
+    const raw = atob(value);
+    const buffer = new ArrayBuffer(raw.length);
+    const arr = new Uint8Array(buffer);
+    for (let i = 0; i < raw.length; i++) {
+        arr[i] = raw.charCodeAt(i);
+    }
+    return buffer;
+}
+
+const stringToBuffer = (str: string): Uint8Array => {
+  return new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
+}
+
+
+const createPasskey = async (options: CredentialCreationOptions) => {
+    try {
+        const credential = await navigator.credentials.create(options) as PublicKeyCredential;
+        if (credential && credential.rawId) {
+            return bufferEncode(credential.rawId);
+        }
+        throw new Error("Credential creation failed or returned an invalid object.");
+    } catch (err) {
+        console.error("Passkey registration failed:", err);
+        throw new Error("Could not create passkey. Your browser may not support it or you may have cancelled the request.");
+    }
+};
+
+const getPasskey = async (options: CredentialRequestOptions) => {
+     try {
+        const assertion = await navigator.credentials.get(options);
+        return !!assertion;
+    } catch (err) {
+        console.error("Passkey authentication failed:", err);
+        return false;
+    }
+};
+
+
+export const authService = {
+    saveAuthState: (state: AuthState) => {
+        localStorage.setItem(AUTH_KEY, JSON.stringify(state));
+    },
+
+    getAuthState: (): AuthState | null => {
+        const state = localStorage.getItem(AUTH_KEY);
+        try {
+            return state ? JSON.parse(state) : null;
+        } catch {
+            return null;
+        }
+    },
+
+    clearAuthState: () => {
+        localStorage.removeItem(AUTH_KEY);
+    },
+    
+    // --- Login functions that create full auth state ---
+    loginTrainer: (): AdminAuthState => {
+        authService.ensureTrainerProfile();
+        return {
+            role: UserRole.Admin,
+            subscriptionStatus: localStorage.getItem('fit_track_admin_sub') === 'pro' ? 'pro' : 'free',
+            stripeConnected: localStorage.getItem('fit_track_stripe_connected') === 'true',
+        };
+    },
+
+    loginSolo: (): SoloAuthState => ({
+        role: UserRole.Solo,
+        clientId: authService.ensureSoloUserProfile(),
+        subscriptionStatus: localStorage.getItem('fit_track_solo_sub') === 'pro' ? 'pro' : 'free',
+    }),
+    
+    loginClient: (clientId: string): ClientAuthState => ({
+        role: UserRole.Client,
+        clientId,
+    }),
+
+    // --- Subscription Status ---
+    setSubscriptionStatus: (role: UserRole.Admin | UserRole.Solo, status: SubscriptionStatus) => {
+        const key = role === UserRole.Admin ? 'fit_track_admin_sub' : 'fit_track_solo_sub';
+        localStorage.setItem(key, status);
+        const currentAuth = authService.getAuthState();
+        if(currentAuth && currentAuth.role === role) {
+            authService.saveAuthState({ ...currentAuth, subscriptionStatus: status });
+        }
+    },
+
+    // --- Stripe Connection for Trainer ---
+    connectStripe: () => {
+        localStorage.setItem('fit_track_stripe_connected', 'true');
+        const currentAuth = authService.getAuthState();
+        if(currentAuth && currentAuth.role === UserRole.Admin) {
+            authService.saveAuthState({ ...currentAuth, stripeConnected: true });
+        }
+    },
+    
+    // --- Trainer Passkey Auth ---
+    isTrainerRegistered: async (): Promise<boolean> => !!localStorage.getItem(TRAINER_PASSKEY_ID_KEY),
+
+    registerTrainerPasskey: async (): Promise<void> => {
+        const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
+        const options: CredentialCreationOptions = {
+            publicKey: {
+                challenge,
+                rp: { name: "FitTrack AI", id: location.hostname },
+                user: { id: stringToBuffer(TRAINER_USER_HANDLE), name: "trainer@fittrack.ai", displayName: "Trainer" },
+                pubKeyCredParams: [{ type: "public-key", alg: -7 }], // ES256
+                authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                timeout: 60000, attestation: "direct",
+            },
+        };
+        const encodedId = await createPasskey(options);
+        localStorage.setItem(TRAINER_PASSKEY_ID_KEY, encodedId);
+    },
+    
+    resetAndRegisterTrainerPasskey: async (): Promise<void> => {
+        localStorage.removeItem(TRAINER_PASSKEY_ID_KEY);
+        await authService.registerTrainerPasskey();
+    },
+
+    authenticateTrainer: async (): Promise<boolean> => {
+        const credentialId = localStorage.getItem(TRAINER_PASSKEY_ID_KEY);
+        if (!credentialId) throw new Error("No passkey registered for trainer.");
+        const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
+        const options: CredentialRequestOptions = {
+            publicKey: {
+                challenge, timeout: 60000, rpId: location.hostname,
+                allowCredentials: [{ type: 'public-key', id: bufferDecode(credentialId), transports: ['internal'] }],
+                userVerification: 'required',
+            }
+        };
+        return getPasskey(options);
+    },
+
+    // --- Solo User Auth ---
+    isSoloUserRegistered: async (): Promise<boolean> => !!localStorage.getItem(SOLO_PASSKEY_ID_KEY),
+
+    registerSoloUserPasskey: async (): Promise<void> => {
+        const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
+        const options: CredentialCreationOptions = {
+            publicKey: {
+                challenge,
+                rp: { name: "FitTrack AI", id: location.hostname },
+                user: { id: stringToBuffer(SOLO_USER_HANDLE), name: "solo@fittrack.ai", displayName: "Solo User" },
+                pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                timeout: 60000, attestation: "direct",
+            },
+        };
+        const encodedId = await createPasskey(options);
+        localStorage.setItem(SOLO_PASSKEY_ID_KEY, encodedId);
+    },
+    
+    resetAndRegisterSoloUserPasskey: async (): Promise<void> => {
+        localStorage.removeItem(SOLO_PASSKEY_ID_KEY);
+        await authService.registerSoloUserPasskey();
+    },
+
+    authenticateSoloUser: async (): Promise<boolean> => {
+        const credentialId = localStorage.getItem(SOLO_PASSKEY_ID_KEY);
+        if (!credentialId) throw new Error("No passkey registered for solo user.");
+        const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
+        const options: CredentialRequestOptions = {
+            publicKey: {
+                challenge, timeout: 60000, rpId: location.hostname,
+                allowCredentials: [{ type: 'public-key', id: bufferDecode(credentialId), transports: ['internal'] }],
+                userVerification: 'required',
+            }
+        };
+        return getPasskey(options);
+    },
+    
+    // --- Client Passkey Auth ---
+    isClientRegistered: (client: Client): boolean => !!client.passkeyId,
+
+    registerClientPasskey: async (clientId: string): Promise<void> => {
+        const clients = storageService.getClients();
+        const clientIndex = clients.findIndex(c => c.id === clientId);
+        if (clientIndex === -1) throw new Error("Client not found.");
+        const client = clients[clientIndex];
+        
+        const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
+        const options: CredentialCreationOptions = {
+            publicKey: {
+                challenge, rp: { name: "FitTrack AI", id: location.hostname },
+                user: { id: stringToBuffer(client.userHandle), name: client.name, displayName: client.name },
+                pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                timeout: 60000, attestation: "direct",
+            },
+        };
+        const encodedId = await createPasskey(options);
+        clients[clientIndex].passkeyId = encodedId;
+        storageService.saveClients(clients);
+    },
+
+    authenticateClient: async (clientId: string): Promise<boolean> => {
+        const client = storageService.getClients().find(c => c.id === clientId);
+        if (!client || !client.passkeyId) throw new Error("No passkey registered for this client.");
+        
+        const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
+        const options: CredentialRequestOptions = {
+            publicKey: {
+                challenge, timeout: 60000, rpId: location.hostname,
+                allowCredentials: [{ type: 'public-key', id: bufferDecode(client.passkeyId), transports: ['internal'] }],
+                userVerification: 'required',
+            }
+        };
+        return getPasskey(options);
+    },
+    
+    resetAndRegisterClientPasskey: async (clientId: string): Promise<void> => {
+        const clients = storageService.getClients();
+        const clientIndex = clients.findIndex(c => c.id === clientId);
+        if (clientIndex === -1) throw new Error("Client not found.");
+        
+        clients[clientIndex].passkeyId = undefined; // Clear the old ID
+        storageService.saveClients(clients);
+        
+        await authService.registerClientPasskey(clientId); // Register the new one
+    },
+    
+    // --- User Profile Management ---
+    ensureTrainerProfile: (): void => {
+        const clients = storageService.getClients();
+        if (!clients.find(c => c.id === TRAINER_CLIENT_ID)) {
+            const newTrainerClient: Client = {
+                id: TRAINER_CLIENT_ID, name: 'Me', assignedProgramIds: [],
+                notes: 'This is my personal training profile.', status: 'active', userHandle: uuidv4()
+            };
+            storageService.saveClients([...clients, newTrainerClient]);
+        }
+    },
+    
+    ensureSoloUserProfile: (): string => {
+        const clients = storageService.getClients();
+        const soloClient = clients.find(c => c.id === SOLO_USER_CLIENT_ID);
+        if (!soloClient) {
+            const newSoloClient: Client = {
+                id: SOLO_USER_CLIENT_ID,
+                name: 'Me (Solo)',
+                assignedProgramIds: [],
+                notes: 'This is my personal profile for solo training.',
+                status: 'active',
+                userHandle: uuidv4(),
+            };
+            storageService.saveClients([...clients, newSoloClient]);
+        }
+        return SOLO_USER_CLIENT_ID;
+    }
+};
+```
+
+... I've omitted the rest of the files for brevity, as the complete code would exceed the response size limit. The provided markdown file starts with the most critical configuration and top-level files, ensuring the core structure is clear for analysis. It can be fully generated upon request if the size limit is not an issue.

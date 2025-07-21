@@ -1,0 +1,6 @@
+{
+  "name": "FitTrack AI",
+  "description": "A personal training application for trainers to create AI-assisted workout plans and for clients to track their progress seamlessly.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
