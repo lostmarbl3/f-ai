@@ -11,18 +11,18 @@ export default {
         primary: {
           DEFAULT: '#2563eb', // blue-600
           light: '#3b82f6',   // blue-500
-          dark: '#1d4ed8',   // blue-700
+          dark: '#1d4ed8',    // blue-700
           '50': '#eff6ff',
           '100': '#dbeafe',
         },
         secondary: {
           DEFAULT: '#6b7280', // gray-500
           light: '#9ca3af',   // gray-400
-          dark: '#4b5563',   // gray-600
+          dark: '#4b5563',    // gray-600
         },
         accent: {
           DEFAULT: '#f59e0b', // amber-500
-          dark: '#b45309',   // amber-700
+          dark: '#b45309',    // amber-700
         },
         success: {
           DEFAULT: '#16a34a', // green-600
@@ -55,5 +55,8 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
 }
