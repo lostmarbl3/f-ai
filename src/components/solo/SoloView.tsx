@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Program } from "../../types";
 import { authService } from "../../services/authService";
-import { Spinner } from "../ui/Spinner";
+import Spinner from "../ui/Spinner";
 
 export default function SoloView() {
   const [programs, setPrograms] = useState<Program[] | null>(null);
