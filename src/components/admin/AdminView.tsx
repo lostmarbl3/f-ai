@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useWorkoutStore } from "@/store/workoutStore";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
