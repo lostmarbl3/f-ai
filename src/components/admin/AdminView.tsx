@@ -1,85 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import { ExerciseSet, LoggedWorkout } from '../../types';
-import { formatDuration } from '../../utils/timeUtils';
-import { Textarea } from '../ui/Textarea';
+import React, { useEffect, useState } from "react";
+import { useWorkoutStore } from "@/store/workoutStore";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
-type Props = {
-    workout: LoggedWorkout;
+type SetLog = {
+  weight: number;
+  reps: number;
+  rpe: number;
+  note: string;
+  completed: boolean;
 };
 
-export const AdminView: React.FC<Props> = ({ workout }) => {
-    const [notes, setNotes] = useState<string>('');
-    const [timer, setTimer] = useState<number>(0);
-    const [active, setActive] = useState<boolean>(false);
+type SetProps = {
+  setIndex: number;
+  log: SetLog;
+  onChange: (updated: Partial<SetLog>) => void;
+};
 
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (active) {
-            interval = setInterval(() => setTimer((t) => t + 1), 1000);
+const SetEntry: React.FC<SetProps> = ({ setIndex, log, onChange }) => {
+  const [timerActive, setTimerActive] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60); // default 60s rest
+
+  useEffect(() => {
+    if (!timerActive) return;
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          setTimerActive(false);
+          return 0;
         }
-        return () => clearInterval(interval);
-    }, [active]);
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timerActive]);
 
-    const handleTimerToggle = () => {
-        if (active) {
-            setActive(false);
-            setTimer(0);
-        } else {
-            setActive(true);
-        }
-    };
+  const toggleTimer = () => {
+    if (timerActive) {
+      setTimerActive(false);
+      setTimeLeft(60);
+    } else {
+      setTimerActive(true);
+    }
+  };
 
-    return (
-        <div className="p-4 bg-slate-800 text-white rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-2">{workout.exerciseName}</h2>
-            <p className="mb-4">
-                Target Sets: {workout.targetSets} | Target Reps: {workout.targetReps} | Rest: {workout.restSeconds}s
-            </p>
-
-            {workout.sets.map((set: ExerciseSet, i: number) => (
-                <div key={i} className="mb-4 p-3 bg-slate-700 rounded">
-                    <h4 className="font-semibold text-lg">Set {i + 1}</h4>
-                    <div className="grid grid-cols-4 gap-3 mt-2">
-                        <input
-                            className="p-2 rounded bg-slate-900 text-white"
-                            type="number"
-                            placeholder="Weight"
-                            value={set.actualWeight}
-                            onChange={(e) => set.actualWeight = parseFloat(e.target.value)}
-                        />
-                        <input
-                            className="p-2 rounded bg-slate-900 text-white"
-                            type="number"
-                            placeholder="Reps"
-                            value={set.reps}
-                            onChange={(e) => set.reps = parseInt(e.target.value)}
-                        />
-                        <input
-                            className="p-2 rounded bg-slate-900 text-white"
-                            type="number"
-                            placeholder="1-10"
-                            value={set.rpe}
-                            onChange={(e) => set.rpe = parseInt(e.target.value)}
-                        />
-                        <button
-                            className={`border-2 p-2 rounded ${active ? 'border-green-400' : 'border-white'}`}
-                            onClick={handleTimerToggle}
-                        >
-                            {formatDuration(timer)}
-                        </button>
-                    </div>
-                </div>
-            ))}
-
-            <div className="mt-4">
-                <label className="block mb-1 text-lg">Notes (how did it feel?)</label>
-                <Textarea
-                    className="w-full p-3 rounded bg-slate-900 text-white"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Your notes..."
-                />
-            </div>
+  return (
+    <div className="bg-slate-800 p-4 rounded-md mb-4 text-white">
+      <h3 className="text-lg font-semibold mb-2">Set {setIndex + 1}</h3>
+      <div className="grid grid-cols-4 gap-4 mb-2">
+        <Input
+          type="number"
+          step="0.1"
+          placeholder="Weight"
+          value={log.weight}
+          onChange={(e) => onChange({ weight: parseFloat(e.target.value) })}
+        />
+        <Input
+          type="number"
+          placeholder="Reps"
+          value={log.reps}
+          onChange={(e) => onChange({ reps: parseInt(e.target.value) })}
+        />
+        <Input
+          type="number"
+          placeholder="RPE"
+          value={log.rpe}
+          onChange={(e) => onChange({ rpe: parseFloat(e.target.value) })}
+        />
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={log.completed}
+            onChange={(e) => onChange({ completed: e.target.checked })}
+            className="w-5 h-5 accent-blue-500"
+          />
+          <span>{timerActive ? `0:${timeLeft.toString().padStart(2, "0")}` : "Start"}</span>
         </div>
-    );
+      </div>
+      <textarea
+        placeholder="Notes (how did it feel?)"
+        value={log.note}
+        onChange={(e) => onChange({ note: e.target.value })}
+        className="w-full mt-2 p-2 rounded-md bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+      <Button onClick={toggleTimer} className="mt-2">
+        {timerActive ? "Stop Timer" : "Start Timer"}
+      </Button>
+    </div>
+  );
 };
+
+const AdminView: React.FC = () => {
+  const { activeWorkout, updateSetLog } = useWorkoutStore();
+
+  if (!activeWorkout) return <div className="text-white">No active workout</div>;
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold text-white mb-4">{activeWorkout.name}</h2>
+      {activeWorkout.exercises.map((exercise, exIdx) => (
+        <div key={exIdx} className="mb-8">
+          <h3 className="text-xl font-semibold text-white mb-2">{exercise.name}</h3>
+          {exercise.sets.map((set, setIdx) => (
+            <SetEntry
+              key={setIdx}
+              setIndex={setIdx}
+              log={set}
+              onChange={(updated) => updateSetLog(exIdx, setIdx, updated)}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default AdminView;
