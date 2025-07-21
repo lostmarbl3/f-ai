@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Client, Program, Workout } from "../../types";
 import { authService } from "../../services/authService";
 import { Spinner } from "../ui/Spinner";
-import { ProgramPreview } from "../shared/ProgramPreview";
 
 export default function ClientView() {
   const [programs, setPrograms] = useState<Program[] | null>(null);
