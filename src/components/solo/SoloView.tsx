@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Program } from "../../types";
 import { authService } from "../../services/authService";
-import { programService } from "../../services/programService";
 import { Spinner } from "../ui/Spinner";
 import { ProgramPreview } from "../shared/ProgramPreview";
 
